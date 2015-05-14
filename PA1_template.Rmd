@@ -1,6 +1,6 @@
-<<<<<<< HEAD
+
 #This is for Reproducible Research: Peer Assessment 1
-By Tariq M. Salameh on 14 May 2015
+By - Tariq M. Salameh on 14 May 2015
 
 
 #Introduction
@@ -179,10 +179,12 @@ dev.off()
 As you can see in the weekend there is relatively higher average number of steps in the middle year interval compared to weekday, on otherhand, in the weekday there is significant higher number of average of steps in the morning interval 
 =======
 ---
-title: "Reproducible Research: Peer Assessment 1"
-output: 
+title: 'Reproducible Research: Peer Assessment 1'
+output:
   html_document:
-    keep_md: true
+    keep_md: yes
+  pdf_document: default
+  word_document: default
 ---
 
 
