@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #This is for Reproducible Research: Peer Assessment 1
 By Tariq M. Salameh on 14 May 2015
 
@@ -11,7 +12,7 @@ The following will load all required libraries a long with checking the address 
 
 ```{r, echo=TRUE, message=FALSE}
 #loading library
-library(lubridate )
+library(lubridate ) 
 library(plyr)
 library(dplyr)
 library(ggplot2)
@@ -176,3 +177,30 @@ dev.off()
 ```
 
 As you can see in the weekend there is relatively higher average number of steps in the middle year interval compared to weekday, on otherhand, in the weekday there is significant higher number of average of steps in the morning interval 
+=======
+---
+title: "Reproducible Research: Peer Assessment 1"
+output: 
+  html_document:
+    keep_md: true
+---
+
+
+## Loading and preprocessing the data
+
+
+
+## What is mean total number of steps taken per day?
+
+
+
+## What is the average daily activity pattern?
+
+
+
+## Imputing missing values
+
+
+
+## Are there differences in activity patterns between weekdays and weekends?
+>>>>>>> 80edf39c3bb508fee88e3394542f967dd3fd3270
