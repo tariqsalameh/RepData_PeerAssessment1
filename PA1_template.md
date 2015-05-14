@@ -10,7 +10,8 @@ This is the first assigment that should be submitted to be evaluated by peers in
 
 The following will load all required libraries a long with checking the address the is required to place you data, we will download data, load it, then preprocess it to make it ready for analysis
 
-```{r, echo=TRUE, message=FALSE}
+
+```r
 #loading library
 library(lubridate ) 
 library(plyr)
@@ -41,7 +42,8 @@ if(!file.exists("./RepData_PeerAssessment1/figure")){dir.create("./RepData_PeerA
 
 The following code will do the required calculation to get the Means of Steps Per Day
 
-```{r, echo=TRUE}
+
+```r
 #Step - What is mean total number of steps taken per day?
 
 
@@ -54,20 +56,35 @@ MS_Per_Day<-activity_monitoring %>% filter(!is.na(steps)) %>% group_by(date) %>%
 The following will generate a plot using ggplot2 library to show histogram of total number of steps taken per day
 
 
-```{r, echo=TRUE}
+
+```r
 ggplot(data = MS_Per_Day, aes(totalpDay)) + geom_histogram(binwidth=5000)+xlab("Date")+ylab("Average Steps")+labs(title="Average Steps Per Day")
 ```
 
+![plot of chunk unnamed-chunk-3](figure/unnamed-chunk-3.png) 
+
 ##Calculate and report the mean and median of the total number of steps taken per day
 
-The mean for total number of steps taken per day is `r mean(MS_Per_Day$totalpDay) `
-The median for total number of steps taken per day is `r median(MS_Per_Day$totalpDay) `
+The mean for total number of steps taken per day is 1.0766 &times; 10<sup>4</sup>
+The median for total number of steps taken per day is 10765
 
 
 The following we obtained these resulst
-```{r, echo=TRUE}
+
+```r
 mean(MS_Per_Day$totalpDay)
+```
+
+```
+## [1] 10766
+```
+
+```r
 median(MS_Per_Day$totalpDay)
+```
+
+```
+## [1] 10765
 ```
 
 
@@ -77,21 +94,37 @@ median(MS_Per_Day$totalpDay)
 
 First prepare the data set calculation by group by interval then do the summarization for the mean and total number of steps 
 
-```{r, echo=TRUE}
+
+```r
 MS_Per_Interval<-activity_monitoring %>% group_by(interval) %>% summarize(avg=mean(steps,na.rm = TRUE),total=sum(steps,na.rm = TRUE))
 ```
 
 The following will plot the steps using line diagram
 
-```{r, echo=TRUE}
+
+```r
 qplot(x=interval,y=steps,stat="summary",fun.y="mean", data = activity_monitoring,geom="line")+labs(title="Average steps per interval")
 ```
 
+```
+## Warning: Removed 2304 rows containing missing values (stat_summary).
+```
 
-As you can see from the diagram and based on the following script , the interval with max number of steps per days is `r MS_Per_Interval %>% filter(avg==max(MS_Per_Interval$avg)) %>% select(interval)` , and the follwing how we did the caluculation:
+![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6.png) 
 
-```{r, echo=TRUE}
+
+As you can see from the diagram and based on the following script , the interval with max number of steps per days is 835 , and the follwing how we did the caluculation:
+
+
+```r
 MS_Per_Interval %>% filter(avg==max(MS_Per_Interval$avg)) %>% select(interval,avg)
+```
+
+```
+## Source: local data frame [1 x 2]
+## 
+##   interval   avg
+## 1      835 206.2
 ```
 
 #Section - Imputing missing values
@@ -101,35 +134,52 @@ Tthe strategy for filling in all of the missing values in the dataset. will be u
 
 first, I will create the merged data set that contains both na and avg steps interval values along
 
-```{r, echo=TRUE}
+
+```r
 imputed_data<-activity_monitoring 
 merged_data<-merge(x = imputed_data,y=MS_Per_Interval,by.x = "interval",by.y="interval")
 ```
 
 Secondly, I will use mutate capabiltites to enrich data using ifelse statement to overwrite the value if it is NA
-```{r, echo=TRUE}
+
+```r
 imputed_merged_data<-merged_data %>% mutate(steps=ifelse(is.na(steps),avg,steps)) %>% select(steps,date,interval)%>%arrange(date,interval)
 ```
 
 
 The following will generate the average of steps per day for imputed result set and plot it as well:
-```{r, echo=TRUE}
+
+```r
 ID_MS_Per_Day<-imputed_merged_data %>% filter(!is.na(steps)) %>% group_by(date) %>% summarize(totalpDay=sum(steps,na.rm = TRUE))
 
 ggplot(data = ID_MS_Per_Day, aes(totalpDay)) + geom_histogram(binwidth=5000)+xlab("Date")+ylab("Average Steps")+labs(title="IMputed Missing data -Average Steps Per Day")
 ```
 
+![plot of chunk unnamed-chunk-10](figure/unnamed-chunk-10.png) 
+
 
 Now, we want to report the mean and the median and compare if it is different than unimputed one
 
-The mean for total number of steps taken per day is `r mean(ID_MS_Per_Day$totalpDay) `
-The median for total number of steps taken per day is `r median(ID_MS_Per_Day$totalpDay) `
+The mean for total number of steps taken per day is 1.0766 &times; 10<sup>4</sup>
+The median for total number of steps taken per day is 1.0766 &times; 10<sup>4</sup>
 
 
 The following we obtained these resulst
-```{r, echo=TRUE}
+
+```r
 mean(ID_MS_Per_Day$totalpDay)
+```
+
+```
+## [1] 10766
+```
+
+```r
 median(ID_MS_Per_Day$totalpDay)
+```
+
+```
+## [1] 10766
 ```
 
 
@@ -139,21 +189,26 @@ As you can see there is no change in mean however there is a slight change in me
 
 Create a new factor variable in the dataset with two levels - "weekday" and "weekend" indicating whether a given date is a weekday or weekend day. therefoe the following code will do the required prepreation and generating the dataset along with day is weekday or weekend.
 
-```{r, echo=TRUE}
+
+```r
 imputed_merged_data <- imputed_merged_data%>% mutate(weekday=weekdays(date)) %>% mutate(daytype = ifelse(weekday %in% c("Saturday","Sunday"),"Weekend","Weekday"))
 ```
 
 
 The following will calculate the mean for steps per interval and daytype
-  ```{r, echo=TRUE}
- avg_per_daytype_interval<-imputed_merged_data %>% group_by(daytype,interval) %>% summarize(avg=mean(steps))
-```
+  
+  ```r
+   avg_per_daytype_interval<-imputed_merged_data %>% group_by(daytype,interval) %>% summarize(avg=mean(steps))
+  ```
 
 
 The following will do the plotting for average steps per daytype or interval
-```{r, echo=TRUE}
+
+```r
 ggplot(data=avg_per_daytype_interval,aes(x = interval,y=avg)) +geom_line()+facet_wrap(~daytype,nrow=2,ncol=1)+labs(title="Average steps per interval for weekday type")
 ```
+
+![plot of chunk unnamed-chunk-14](figure/unnamed-chunk-14.png) 
 
 
 As you can see in the weekend there is relatively higher average number of steps in the middle year interval compared to weekday, on otherhand, in the weekday there is significant higher number of average of steps in the morning interval 
